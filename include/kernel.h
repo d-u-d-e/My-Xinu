@@ -32,6 +32,8 @@ typedef	uint32	intmask;	/* saved interrupt mask */
 typedef	int16	qid16;		/* queue ID	*/
 typedef	int32	bpid32;		/* buffer pool ID */
 typedef	int32	did32;		/* device ID */
+typedef	int32	ibid32;		/* index block ID (used in file system)	*/
+typedef	int32	dbid32;		/* data block ID (used in file system)	*/
 
 /* Function declaration return types */
 

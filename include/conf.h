@@ -26,5 +26,7 @@ extern struct dentry devtab[]; /* one entry per device */
 
 #define NDEVS       1
 #define CONSOLE     0	/* type tty */
+#define NULLDEV     1	/* type null     */
+#define RAM0        2	/* type ram */
 
 #define	Ntty	1

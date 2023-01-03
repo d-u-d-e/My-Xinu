@@ -20,7 +20,8 @@ DEFS:= -DVERSION=\""`cat $(VERSIONFILE)`"\"
 KERNEL_OBJS:= $(patsubst %.S,%.o,$(wildcard $(TOPDIR)/kernel/*.S)) $(patsubst %.c,%.o,$(wildcard $(TOPDIR)/kernel/*.c)) 
 LIB_OBJS:= $(patsubst %.c,%.o,$(wildcard $(TOPDIR)/lib/*.c))
 DEV_OBJS:= $(patsubst %.c,%.o,$(wildcard $(TOPDIR)/device/**/*.c))
-OBJ_FILES:= $(KERNEL_OBJS) $(LIB_OBJS) $(DEV_OBJS)
+APP_OBJS:= $(patsubst %.c,%.o,$(wildcard $(TOPDIR)/shell/*.c))
+OBJ_FILES:= $(KERNEL_OBJS) $(LIB_OBJS) $(DEV_OBJS) $(APP_OBJS)
 
 #--------------------------------------------------------------------------------
 # Add files that require special rules and place start.o at the front

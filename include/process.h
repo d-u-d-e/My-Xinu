@@ -53,3 +53,13 @@ extern pid32 currpid;	/* Currently executing process */
 /* Inline code to check process ID (assumes interrupts are disabled) */
 
 #define	isbadpid(x)	(((pid32)(x) < 0) || ((pid32)(x) >= NPROC) || (proctab[(x)].prstate == PR_FREE))
+
+pri16 resume(pid32 pid);
+pid32 create(
+    void *  procaddr,
+    uint32  ssize,
+    pri16   priority,
+    char *  name,
+    uint32  nargs,
+    ...
+    );
