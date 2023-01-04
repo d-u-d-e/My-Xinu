@@ -1,11 +1,14 @@
 #include <shell.h>
 #include <lib.h>
 #include <stdio.h>
+#include "shproto.h"
 
 /************************************************************************/
 /* Table of Xinu shell commands and the function associated with each	*/
 /************************************************************************/
-
+const struct cmdent	cmdtab[] = {
+    {"ls", FALSE, xsh_ls}
+};
 
 /************************************************************************/
 /* shell  -  Provide an interactive user interface that executes	*/
@@ -23,6 +26,8 @@
 /*				> output_file				*/
 /*									*/
 /************************************************************************/
+
+uint32 ncmd = sizeof(cmdtab) / sizeof(struct cmdent);
 
 process shell(did32 dev) /* ID of tty device from which	to accept commands */
 {
@@ -91,15 +96,129 @@ process shell(did32 dev) /* ID of tty device from which	to accept commands */
 
         /* Check for input/output redirection (default is none) */
 
+        char * outname = NULL;
+        char * inname = NULL;
+
+        if ((ntok >= 3) && ((toktyp[ntok - 2] == SH_TOK_LESS) || 
+            (toktyp[ntok - 2] == SH_TOK_GREATER))){
+
+            if (toktyp[ntok - 1] != SH_TOK_OTHER){
+                fprintf(dev, "%s\n", SHELL_SYNERRMSG);
+                continue;
+            }
+            if (toktyp[ntok - 2] == SH_TOK_LESS){
+                inname = &tokbuf[tok[ntok - 1]];
+            }
+            else{
+                outname = &tokbuf[tok[ntok - 1]];
+            }
+            ntok -= 2;
+            tlen = tok[ntok];
+        }
+
+        if ((ntok >= 3) && ((toktyp[ntok - 2] == SH_TOK_LESS) || 
+            (toktyp[ntok - 2] == SH_TOK_GREATER))){
+
+            if (toktyp[ntok - 1] != SH_TOK_OTHER){
+                fprintf(dev, "%s\n", SHELL_SYNERRMSG);
+                continue;
+            }
+            if (toktyp[ntok - 2] == SH_TOK_LESS){
+                if (inname != NULL){ // can't have < a < b
+                    fprintf(dev, "%s\n", SHELL_SYNERRMSG);
+                    continue;    
+                }
+                inname = &tokbuf[tok[ntok - 1]]; // here < a > b
+            }
+            else{
+                if (outname != NULL){ // can't have > a > b
+                    fprintf(dev, "%s\n", SHELL_SYNERRMSG);
+                    continue;    
+                }
+                outname = &tokbuf[tok[ntok - 1]]; // here > a < b
+            }
+            ntok -= 2;
+            tlen = tok[ntok];
+        }
+
         /* Verify remaining tokens are type "other" */
+        
+        int32 i;
+        for (i = 0; i < ntok; i++){
+            if (toktyp[i] != SH_TOK_OTHER){
+                break;
+            }
+        }
+        if ((ntok == 0) || (i < ntok)) {
+            fprintf(dev, SHELL_SYNERRMSG);
+            continue;
+        }
+
+        did32 stdinput, stdoutput; /* Descriptors for redirected input / output */
+
+        stdinput = stdoutput = dev;
 
         /* Lookup first token in the command table */
 
+        int32 j;
+        char * src, * cmp;
+        bool8 diff;
+        for (j = 0; j < ncmd; j++){
+            src = cmdtab[j].cname;
+            cmp = tokbuf;
+            diff = FALSE;
+            while (*src != NULLCH){
+                if (*cmp != *src){
+                    diff = TRUE;
+                    break;
+                }
+                src++; cmp++;
+            }
+            if (diff || (*cmp != NULLCH)){
+                continue;
+            }
+            else{
+                break;
+            }
+        }
+
         /* Handle command not found */
+
+        if (j >= ncmd){
+            fprintf(dev, "command %s not found\n", tokbuf);
+            continue;
+        }
 
         /* Handle built-in command */
 
+        char * args[SHELL_MAXTOK];
+
+        if (cmdtab[j].cbuiltin){ /* No background or redirect. */
+            if(inname != NULL || outname != NULL || backgnd){
+                fprintf(dev, SHELL_BGERRMSG);
+                continue;                
+            }
+            else{
+                /* Set up arg vector for call */
+
+                for (i = 0; i < ntok; i++){
+                    args[i] = &tokbuf[tok[i]];
+                }
+
+                /* Call builtin shell function */
+
+                if ((*cmdtab[j].cfunc)(ntok, args) == SHELL_EXIT){
+                    break;
+                }
+            }
+            continue;
+        }
+
         /* Open files and redirect I/O if specified */
+
+        if (inname != NULL){
+            ; //TODO
+        }
 
         /* Spawn child thread for non-built-in commands */
 

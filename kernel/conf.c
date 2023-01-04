@@ -2,6 +2,7 @@
 #include <tty.h>
 #include <ramdisk.h>
 #include <lfs.h>
+#include <name.h>
 
 extern devcall  ioerr(void); /* in file ioerr.c */
 extern devcall  ionull(void); /* in file ionull.c */
@@ -44,4 +45,11 @@ struct dentry devtab[NDEVS] =
 	  (void *)ioerr, (void *)ioerr, (void *)ioerr,
 	  (void *)ioerr, (void *)ioerr, (void *)ioerr,
 	  (void *)0x0, (void *)ionull, 0},
+
+/* NAMESPACE is nam */
+	{4, 0, "NAMESPACE",
+	  (void *)naminit, (void *)namopen, (void *)ioerr,
+	  (void *)ioerr, (void *)ioerr, (void *)ioerr,
+	  (void *)ioerr, (void *)ioerr, (void *)ioerr,
+	  (void *)0x0, (void *)ioerr, 0},
 };

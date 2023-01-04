@@ -28,5 +28,7 @@ extern struct dentry devtab[]; /* one entry per device */
 #define CONSOLE     0	/* type tty */
 #define NULLDEV     1	/* type null     */
 #define RAM0        2	/* type ram */
+#define LFILESYS    3	/* type lfs      */
+#define NAMESPACE   4	/* type nam      */
 
 #define	Ntty	1

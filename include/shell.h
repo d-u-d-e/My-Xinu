@@ -20,6 +20,7 @@
 #define SHELL_EXITMSG	"Shell closed\n"    /* Shell exit message */
 #define SHELL_PROMPT	"xsh $ "	/* Command prompt		*/
 #define SHELL_SYNERRMSG	"Syntax error\n" /* Syntax error message		*/
+#define SHELL_BGERRMSG	"Cannot redirect I/O or background a builtin\n"
 
 #define SHELL_BUFLEN	TY_IBUFLEN + 1	/* Length of input buffer	*/
 
@@ -49,5 +50,11 @@ struct cmdent {			/* Entry in command table	*/
 #define	SH_TOK_LESS		1		/* Less-than token		*/
 #define	SH_TOK_GREATER	2		/* Greater-than token		*/
 #define	SH_TOK_OTHER	3		/* Token other than those listed above */
+
+/* Shell return constants */
+
+#define	SHELL_OK	 0
+#define	SHELL_ERROR	 1
+#define	SHELL_EXIT	-3
 
 
