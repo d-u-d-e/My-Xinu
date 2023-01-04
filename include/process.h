@@ -12,6 +12,7 @@
 #define	PR_FREE		0	/* Process table entry is unused	*/
 #define	PR_CURR		1	/* Process is currently running		*/
 #define	PR_READY	2	/* Process is on ready queue		*/
+#define	PR_RECV		3	/* Process waiting for message		*/
 #define	PR_SLEEP	4	/* Process is sleeping			*/
 #define	PR_SUSP		5	/* Process is suspended			*/
 #define	PR_WAIT		6	/* Process is on semaphore queue	*/
@@ -63,3 +64,7 @@ pid32 create(
     uint32  nargs,
     ...
     );
+
+umsg32 receive(void);
+syscall kill(pid32 pid);
+pid32 getpid(void);

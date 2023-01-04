@@ -24,11 +24,13 @@ extern struct dentry devtab[]; /* one entry per device */
 
 /* Device name definitions */
 
-#define NDEVS       1
+#define NDEVS       11
 #define CONSOLE     0	/* type tty */
 #define NULLDEV     1	/* type null     */
 #define RAM0        2	/* type ram */
 #define LFILESYS    3	/* type lfs      */
 #define NAMESPACE   4	/* type nam      */
+#define RFILESYS    6	/* type rfs      */
 
 #define	Ntty	1
+#define	Nlfl	6 // local files

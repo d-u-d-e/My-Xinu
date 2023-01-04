@@ -30,11 +30,6 @@ static pid32 newpid(void)
     return (pid32)SYSERR;
 }
 
-pid32 getpid(void)
-{
-    return (currpid);
-}
-
 pid32 create(
     void *  procaddr, /* procedure address */
     uint32  ssize, /* stack size in bytes */

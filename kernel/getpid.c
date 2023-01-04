@@ -1,11 +1,10 @@
 #include <process.h>
 
 /*------------------------------------------------------------------------
- *  userret  -  Called when a process returns from the top-level function
+ *  getpid  -  Return the ID of the currently executing process
  *------------------------------------------------------------------------
  */
-
-void userret(void)
+pid32 getpid(void)
 {
-    kill(getpid());
+	return (currpid);
 }

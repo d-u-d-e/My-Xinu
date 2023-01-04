@@ -2,6 +2,8 @@
 #include <lib.h>
 #include <stdio.h>
 #include "shproto.h"
+#include <name.h>
+#include <file.h>
 
 /************************************************************************/
 /* Table of Xinu shell commands and the function associated with each	*/
@@ -28,6 +30,8 @@ const struct cmdent	cmdtab[] = {
 /************************************************************************/
 
 uint32 ncmd = sizeof(cmdtab) / sizeof(struct cmdent);
+
+extern umsg32 recvclr(void);
 
 process shell(did32 dev) /* ID of tty device from which	to accept commands */
 {
@@ -154,10 +158,6 @@ process shell(did32 dev) /* ID of tty device from which	to accept commands */
             continue;
         }
 
-        did32 stdinput, stdoutput; /* Descriptors for redirected input / output */
-
-        stdinput = stdoutput = dev;
-
         /* Lookup first token in the command table */
 
         int32 j;
@@ -214,18 +214,56 @@ process shell(did32 dev) /* ID of tty device from which	to accept commands */
             continue;
         }
 
+        did32 stdinput, stdoutput; /* Descriptors for redirected input / output */
+        stdinput = stdoutput = dev;
+
         /* Open files and redirect I/O if specified */
 
         if (inname != NULL){
-            ; //TODO
+            stdinput = open(NAMESPACE, inname, "ro");
+            if (stdinput == SYSERR){
+                fprintf(dev, SHELL_INERRMSG, inname);
+                continue;
+            }
+        }
+        if (outname != NULL){
+            stdoutput = open(NAMESPACE, outname, "w");
+            if (stdoutput == SYSERR){
+                fprintf(dev, SHELL_OUTERRMSG, outname);
+                continue;
+            }
+            else{
+                control(stdoutput, F_CTL_DEL, 0, 0);
+            }
         }
 
         /* Spawn child thread for non-built-in commands */
 
+        int32 tmparg;
+        pid32 child = create(cmdtab[j].cfunc, SHELL_CMDSTK, SHELL_CMDPRIO, 
+            cmdtab[j].cname, 2, ntok, &tmparg);
+
         /* If creation or argument copy fails, report error */
+
+        if ((child == SYSERR) || 
+            (addargs(child, ntok, tok, tlen, tokbuf, &tmparg) == SYSERR)){
+                fprintf(dev, SHELL_CREATMSG);
+                continue;
+        }
 
         /* Set stdinput and stdoutput in child to redirect I/O */
 
+        proctab[child].prdesc[0] = stdinput;
+        proctab[child].prdesc[1] = stdoutput;
+
+        int32 msg = recvclr(); /* Message from receive() for child termination */
+        resume(child);
+        if (!backgnd){
+            msg = receive();
+            while (msg != child){
+                msg = receive();
+            }
+        }
     }
 
     /* Terminate the shell process by returning from the top level */

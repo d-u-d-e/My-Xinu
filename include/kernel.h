@@ -67,3 +67,9 @@ void initevec(void);
 void restore(intmask);
 syscall kprintf(char *fmt, ...);
 
+syscall write(did32 descrp, char * buff, uint32 count);
+syscall open(did32 descrp, char * name, char * mode);
+syscall read(did32 descrp, char * buff, uint32 count);
+syscall close(did32 descrp);
+syscall control(did32 descrp, int32 func, int32 arg1, int32 arg2);
+

@@ -2,6 +2,8 @@
 #include <tty.h>
 
 #define SHELL_MAXTOK	32		/* Maximum tokens per line	*/
+#define SHELL_CMDSTK	8192		/* Size of stack for process	*/
+#define SHELL_CMDPRIO	20		/* Process priority for command	*/
 
 /* Shell banner (assumes VT100) */
 
@@ -21,6 +23,9 @@
 #define SHELL_PROMPT	"xsh $ "	/* Command prompt		*/
 #define SHELL_SYNERRMSG	"Syntax error\n" /* Syntax error message		*/
 #define SHELL_BGERRMSG	"Cannot redirect I/O or background a builtin\n"
+#define SHELL_INERRMSG	"Cannot open file %s for input\n" /* Input err	*/
+#define SHELL_OUTERRMSG	"Cannot open file %s for output\n"/* Output err	*/
+#define SHELL_CREATMSG	"Cannot create process\n"/* command error	*/
 
 #define SHELL_BUFLEN	TY_IBUFLEN + 1	/* Length of input buffer	*/
 

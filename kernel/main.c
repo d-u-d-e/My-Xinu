@@ -2,6 +2,7 @@
 #include <lfs.h>
 #include <conf.h>
 #include <process.h>
+#include <clock.h>
 
 extern umsg32 recvclr(void);
 extern process shell(did32 dev);
@@ -25,7 +26,11 @@ process main(void)
     /* Wait for shell to exit and recreate it */
 
     while(TRUE){
-    
-        ; //TODO
+        if (receive() == shpid){
+            sleepms(200);
+            kprintf("\n\nMain process recreating shell\n\n");
+            resume(shpid = create(shell, 4096, 20, "shell", 1, CONSOLE));
+        }
     }
+    return OK;
 }

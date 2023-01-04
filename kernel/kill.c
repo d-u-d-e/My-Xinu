@@ -1,11 +1,11 @@
 #include <process.h>
 
 /*------------------------------------------------------------------------
- *  userret  -  Called when a process returns from the top-level function
+ *  kill  -  Kill a process and remove it from the system
  *------------------------------------------------------------------------
  */
 
-void userret(void)
+syscall kill(pid32 pid)
 {
-    kill(getpid());
+    return OK;
 }

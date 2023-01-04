@@ -30,6 +30,11 @@
 #pragma once
 #include <kernel.h>
 #include <conf.h>
+#include <file.h>
+
+#ifndef	Nlfl
+#define	Nlfl	1
+#endif
 
 #define	LF_NUM_DIR_ENT	20		/* Num. of files in a directory	*/
 #define	LF_NAME_LEN	16		/* Length of name plus null	*/
@@ -129,8 +134,37 @@ struct lflcblk { /* Local file control block (one for each open file) */
 extern struct lfdata    Lf_data;
 extern struct lflcblk   lfltab[];
 
+#define	LF_MODE_R	F_MODE_R	/* Mode bit for "read"		*/
+#define	LF_MODE_W	F_MODE_W	/* Mode bit for "write"		*/
+#define	LF_MODE_RW	F_MODE_RW	/* Mode bits for "read or write" */
+#define	LF_MODE_O	F_MODE_O	/* Mode bit for "old"		*/
+#define	LF_MODE_N	F_MODE_N	/* Mode bit for "new"		*/
+
+#define	LF_FREE		0		/* Slave device is available	*/
+#define	LF_USED		1		/* Slave device is in use	*/
+
+/* Control functions */
+
+#define	LF_CTL_DEL	    F_CTL_DEL	/* Delete a file		*/
+#define	LF_CTL_TRUNC    F_CTL_TRUNC	/* Truncate a file		*/
+#define LF_CTL_SIZE	    F_CTL_SIZE	/* Obtain the size of a file	*/
+
 devcall lfsinit(struct dentry * devptr);
 status  lfscreate(did32 disk, ibid32 lfiblks, uint32 dsiz);
 devcall lfsopen(struct dentry * devptr, char * name, char * mode);
 void lfibclear(struct lfiblk * ibptr, int32 offset);
 status lfibput(did32 diskdev, ibid32 inum, struct lfiblk * ibuff);
+void lfibget(did32 diskdev, ibid32 inum, struct lfiblk * ibuff);
+int32 lfgetmode(char * mode);
+status lfscheck(struct lfdir * dirptr);
+status lfdbfree(did32 diskdev, dbid32 dnum);
+
+devcall	lflinit(struct dentry * devptr);
+devcall	lflclose(struct dentry * devptr);
+devcall lflread(struct dentry * devptr, char * buff, uint32 count);
+devcall lflwrite(struct dentry * devptr, char * buff, uint32 count);
+devcall lflseek(struct dentry * devptr, uint32 offset);
+devcall lflputc(struct dentry * devptr, char ch);
+devcall lflgetc(struct dentry * devptr);
+devcall lflcontrol(struct dentry * devptr, int32 func, int32 arg1, int32 arg2);
+status lftruncate(struct lflcblk * lfptr);
