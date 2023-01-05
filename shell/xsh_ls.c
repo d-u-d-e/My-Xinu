@@ -12,16 +12,15 @@
 
 shellcmd xsh_ls(int nargs, char *args[])
 {
-    return OK;
-
     if (nargs > 1 && strncmp(args[1], "--help", 7) == 0){
-        printf("Use: %s [-l] [dir]\n\n", args[0]);
+        printf("Usage: %s [-l] [dir]\n\n", args[0]);
         printf("Description:\n");
         printf("\tlist files in the default directory or\n");
         printf("\tthe directory specified by dir\n");
         printf("Options:\n");
         printf("\t-l\t list file size as well as name\n");
         printf("\t--help\t display this help and exit\n");
+        return 0;
     }
 
     if (nargs > 3){
