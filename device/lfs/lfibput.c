@@ -29,4 +29,5 @@ status lfibput(did32 diskdev, ibid32 inum, struct lfiblk * ibuff)
     /* Write the block back to disk */
 
     write(diskblock, dbuff, diskblock);
+    return OK;
 }

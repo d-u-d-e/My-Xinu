@@ -152,6 +152,10 @@ extern process main(void);
 
 static process startup(void)
 {
+	/* DO STUFF THAT CAN'T BE DONE FROM NULL PROCESS */
+	/* remember that the null process cannot cause itself to be */
+	/* dequed from the ready queue */
+
 	/* Create a process to execute function main() */
 
 	resume(create((void *)main, INITSTK, INITPRIO,
@@ -171,7 +175,7 @@ void nulluser()
 
 	sysinit();
 
-	/* Output Xinu memory layout TODO */
+	/* Output Xinu memory layout */
 	free_mem = 0;
 
 	for (memptr = memlist.mnext; memptr != NULL; memptr = memptr->mnext){

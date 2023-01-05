@@ -24,3 +24,4 @@ devcall namopen(struct dentry * devptr, char * name, char * mode);
 syscall mount(char * prefix, char * replace, did32 device);
 devcall nammap(char * name, char newname[NM_MAXLEN], did32 namdev);
 int32 namlen(char * name, int32 maxlen);
+did32 namrepl(char * name, char newname[NM_MAXLEN]);

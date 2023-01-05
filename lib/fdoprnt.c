@@ -17,7 +17,7 @@ static void _prtdbl(double num, int precision, char *str);
  *				All arguments passed as 4 bytes, long==int.
  *------------------------------------------------------------------------
  */
-void _fdoprnt(char * fmt, va_list ap, int (*func)(int, int), int farg)
+void _fdoprnt(char * fmt, va_list ap, int (*func)(int, char), int farg)
 {
     int c;
     int i;

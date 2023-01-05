@@ -9,7 +9,9 @@
 /* Table of Xinu shell commands and the function associated with each	*/
 /************************************************************************/
 const struct cmdent	cmdtab[] = {
-    {"ls", FALSE, xsh_ls}
+    {"ls", FALSE, xsh_ls},
+    {"exit", TRUE, xsh_exit},
+    
 };
 
 /************************************************************************/
@@ -233,7 +235,7 @@ process shell(did32 dev) /* ID of tty device from which	to accept commands */
                 continue;
             }
             else{
-                control(stdoutput, F_CTL_DEL, 0, 0);
+                control(stdoutput, F_CTL_TRUNC, 0, 0);
             }
         }
 

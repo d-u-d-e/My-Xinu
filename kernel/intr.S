@@ -5,6 +5,8 @@
 	.globl 	restore
 	.globl	initevec
 	.globl 	enable
+	.globl	halt
+	.globl	pause
     
 /*------------------------------------------------------------------------
  * disable  -  Disable interrupts and return the previous state
@@ -105,3 +107,9 @@ irq_except:
 enable:
 	cpsie	i		/* Enable interrupts */
 	mov	pc, lr		/* Return */
+
+halt:
+pause:
+	cpsid	i  /* Disable interrupts */
+dloop:
+	b	dloop /* Dead loop */

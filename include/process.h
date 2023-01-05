@@ -16,7 +16,7 @@
 #define	PR_SLEEP	4	/* Process is sleeping			*/
 #define	PR_SUSP		5	/* Process is suspended			*/
 #define	PR_WAIT		6	/* Process is on semaphore queue	*/
-
+#define	PR_RECTIM	7	/* Process is receiving with timeout	*/
 
 #define	PNMLEN  16	/* Length of process "name" */
 #define	NULLPROC	0	/* ID of the null process		*/
@@ -66,5 +66,6 @@ pid32 create(
     );
 
 umsg32 receive(void);
+syscall send(pid32 pid, umsg32 msg);
 syscall kill(pid32 pid);
 pid32 getpid(void);

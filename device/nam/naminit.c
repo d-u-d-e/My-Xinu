@@ -85,5 +85,6 @@ status naminit(void)
     mount("~/", NULLSTR, RFILESYS);
     mount("/", "root:", RFILESYS);
     mount("", NULLSTR, LFILESYS);
+    mount(".", NULLSTR, LFILESYS);
     return OK;
 }

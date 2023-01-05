@@ -1,6 +1,7 @@
 #include <kernel.h>
 #include <lfs.h>
 #include <stdio.h>
+#include <semaphore.h>
 
 /*------------------------------------------------------------------------
  * lfsopen - Open a file and allocate a local file pseudo-device

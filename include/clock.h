@@ -51,3 +51,5 @@ syscall sleepms(int32 delay);
 extern uint32 count1000;
 extern uint32 clktime;
 extern qid16  sleepq;
+
+status unsleep(pid32 pid);

@@ -1,13 +1,12 @@
 #include <kernel.h>
 
-struct dentry;
-
 /*------------------------------------------------------------------------
- * Ramclose  -  Close a ram disk
+ *  xdone  -  Print system completion message as last process exits
  *------------------------------------------------------------------------
  */
 
-devcall ramclose(struct dentry * devptr)
+void xdone(void)
 {
-    return OK;
+	kprintf("\n\nAll user processes have completed.\n\n");
+	halt();				/* Halt the processor		*/
 }

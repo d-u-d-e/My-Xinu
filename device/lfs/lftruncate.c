@@ -18,7 +18,7 @@ status lftruncate(struct lflcblk * lfptr)
     /* Clean up the open local file first */
 
     if ((lfptr->lfibdirty) || (lfptr->lfdbdirty)){
-        ; //TODO FLUSH
+        lfflush(lfptr);
     }
 
     lfptr->lfpos = 0;

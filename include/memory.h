@@ -28,5 +28,13 @@ extern struct memblk memlist;	/* Head of free memory list	*/
 #define	roundmb(x)	(unsigned char *)( (7 + (uint32)(x)) & (~7) )
 #define	truncmb(x)	(unsigned char *)( ((uint32)(x)) & (~7) )
 
+syscall freemem(char * blkaddr, uint32 nbytes);
+
+#define	freestk(p,len)	freemem((char *)((uint32)(p) \
+				- ((uint32)roundmb(len)) \
+				+ (uint32)sizeof(uint32)), \
+				(uint32)roundmb(len) )
+
 void meminit(void);
 char * getstk(uint32 nbytes);
+

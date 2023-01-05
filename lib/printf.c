@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-extern void _fdoprnt(char *, va_list, int (*)(did32, char), int);
+void _fdoprnt(char * fmt, va_list ap, int (*func)(int, char), int farg);
 
 /*------------------------------------------------------------------------
  *  printf  -  standard C printf function

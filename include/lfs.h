@@ -79,7 +79,7 @@ struct ldentry { /* Description of entry for one file in the directory */
 /* Format of the file system directory, either on disk or in memory */
 
 #pragma pack(2)
-struct lfdir {
+struct lfdir { //exactly 512 bytes that fit into a disk sector (first)
     uint32  lfd_fsysid;     /* File system ID */
     int16   lfd_vers;       /* File system version */
     int16   lfd_subvers;    /* File system subversion */
@@ -100,7 +100,7 @@ struct lfdata { /* Local file system data */
     did32           lf_dskdev; /* Device ID of disk to use */
     sid32           lf_mutex; /* Mutex for the directory and index/data free lists */
     struct lfdir    lf_dir; /* In-memory copy of directory */
-    bool8           lf_dirpresent; /* True when directory is in	memory (first file open) */
+    bool8           lf_dirpresent; /* True when directory is in	memory */
     bool8           lf_dirdirty; /* Has the directory changed? */
 };
 
@@ -149,15 +149,28 @@ extern struct lflcblk   lfltab[];
 #define	LF_CTL_TRUNC    F_CTL_TRUNC	/* Truncate a file		*/
 #define LF_CTL_SIZE	    F_CTL_SIZE	/* Obtain the size of a file	*/
 
+#define	LF_IMASK	0x00001fff	/* Mask for the data indexed by	*/
+					/*   one index block (i.e.,	*/
+					/*   bytes 0 through 8191).	*/
+
+#define	LF_DMASK	0x000001ff	/* Mask for the data in a data	*/
+/*   block (0 through 511)	*/
+
 devcall lfsinit(struct dentry * devptr);
 status  lfscreate(did32 disk, ibid32 lfiblks, uint32 dsiz);
 devcall lfsopen(struct dentry * devptr, char * name, char * mode);
-void lfibclear(struct lfiblk * ibptr, int32 offset);
-status lfibput(did32 diskdev, ibid32 inum, struct lfiblk * ibuff);
-void lfibget(did32 diskdev, ibid32 inum, struct lfiblk * ibuff);
-int32 lfgetmode(char * mode);
-status lfscheck(struct lfdir * dirptr);
-status lfdbfree(did32 diskdev, dbid32 dnum);
+int32   lfgetmode(char * mode);
+status  lfscheck(struct lfdir * dirptr);
+
+void    lfibclear(struct lfiblk * ibptr, int32 offset);
+status  lfibput(did32 diskdev, ibid32 inum, struct lfiblk * ibuff);
+void    lfibget(did32 diskdev, ibid32 inum, struct lfiblk * ibuff);
+ibid32  lfiballoc(void);
+status  lfdbfree(did32 diskdev, dbid32 dnum);
+dbid32  lfdballoc(struct lfdbfree * dbuff);
+status  lftruncate(struct lflcblk * lfptr);
+status  lfflush(struct lflcblk * lfptr);
+status  lfsetup(struct lflcblk * lfptr);
 
 devcall	lflinit(struct dentry * devptr);
 devcall	lflclose(struct dentry * devptr);
@@ -167,4 +180,3 @@ devcall lflseek(struct dentry * devptr, uint32 offset);
 devcall lflputc(struct dentry * devptr, char ch);
 devcall lflgetc(struct dentry * devptr);
 devcall lflcontrol(struct dentry * devptr, int32 func, int32 arg1, int32 arg2);
-status lftruncate(struct lflcblk * lfptr);

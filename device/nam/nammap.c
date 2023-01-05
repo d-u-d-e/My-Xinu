@@ -7,7 +7,6 @@
  */
 
 static status namcpy(char * newname, char * oldname, int32 buflen);
-static did32 namrepl(char * name, char newname[NM_MAXLEN]);
 
 devcall nammap(char * name, char newname[NM_MAXLEN], did32 namdev)
 {
