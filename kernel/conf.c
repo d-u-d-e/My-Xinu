@@ -3,6 +3,7 @@
 #include <ramdisk.h>
 #include <lfs.h>
 #include <name.h>
+#include <ether.h>
 
 extern devcall  ioerr(void); /* in file ioerr.c */
 extern devcall  ionull(void); /* in file ionull.c */
@@ -94,4 +95,10 @@ struct dentry devtab[NDEVS] =
 	  (void *)lflread, (void *)lflwrite, (void *)lflseek,
 	  (void *)lflgetc, (void *)lflputc, (void *)lflcontrol,
 	  (void *)0x0, (void *)ionull, 0},
+/* ETHER0 is eth */
+	{11, 0, "ETHER0",
+	  (void *)ethinit, (void *)ioerr, (void *)ioerr,
+	  (void *)ethread, (void *)ethwrite, (void *)ioerr,
+	  (void *)ioerr, (void *)ioerr, (void *)ethcontrol,
+	  (void *)0x0, (void *)ethhandler, 0},
 };

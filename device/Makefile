@@ -14,3 +14,6 @@ ramdisk/%.o: ramdisk/%.c
 	
 tty/%.o: tty/%.c
 	@$(CC) $(CFLAGS) -o $(TOPDIR)/compile/objects/$(notdir $@) $<
+
+eth/%.o: eth/%.c
+	@$(CC) $(CFLAGS) -o $(TOPDIR)/compile/objects/$(notdir $@) $<
