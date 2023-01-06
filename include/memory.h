@@ -37,4 +37,5 @@ syscall freemem(char * blkaddr, uint32 nbytes);
 
 void meminit(void);
 char * getstk(uint32 nbytes);
+char * getmem(uint32 nbytes);
 

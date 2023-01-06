@@ -166,6 +166,8 @@ static process startup(void)
 	return OK;
 }
 
+extern void net_init(void);
+
 void nulluser()
 {	
 	struct memblk * memptr;	/* Ptr to memory block		*/
@@ -198,6 +200,9 @@ void nulluser()
 
 	/* Enable interrupts */
 	enable();
+
+	/* Initialize the network stack and start processes */
+	net_init();
 
 	/* Create a process to finish startup and start main */
 
