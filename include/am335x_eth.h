@@ -18,6 +18,11 @@ struct	eth_a_ale { /* address lookup engine registers */
 	uint32	portctl[6];
 };
 
+#define ETH_AM335X_ALECTL_EN	0x80000000 /* Enable ALE	*/
+#define ETH_AM335X_ALECTL_BY	0x00000010 /* Bypass Mode	*/
+
+#define ETH_AM335X_ALEPCTL_FWD	0x00000003 /* Port Forward state*/
+
 struct	eth_a_cpdma { /* DMA transfer controller registers */
 	uint32	tx_idver;
 	uint32	tx_ctrl;
@@ -74,6 +79,9 @@ struct	eth_a_sl { /* Ethernet sliver */
 };
 
 #define ETH_AM335X_SLCTL_FD	0x00000001	/* Full Duplex	*/
+#define ETH_AM335X_SLCTL_LB	0x00000002	/* Loopback 	*/
+#define ETH_AM335X_SLCTL_EN	0x00000020	/* GMII Rx/Tx Enable */
+#define ETH_AM335X_SLCTL_GIG	0x00000080	/* Gigabit mode	*/
 
 struct	eth_a_ss { /* Ethernet switch subsystem */
 	uint32	idver;
@@ -142,6 +150,24 @@ struct	eth_a_csreg {
 	volatile struct	eth_a_mdio *        mdio;
 };
 
+struct	eth_a_rx_desc {
+	struct	eth_a_rx_desc * next;
+	uint32	buffer;
+	uint16	buflen;
+	uint16	bufoff;
+	uint16	packlen;
+	uint16	stat;
+};
+
+struct	eth_a_tx_desc {
+	struct	eth_a_tx_desc *next;
+	uint32	buffer;
+	uint16	buflen;
+	uint16	bufoff;
+	uint16	packlen;
+	uint16	stat;
+};
+
 #define ETH_AM335X_CPDMA_ADDR	    0x4A100800
 #define ETH_AM335X_SS_ADDR		    0x4A100000
 #define ETH_AM335X_STATERAM_ADDR	0x4A100A00
@@ -151,3 +177,22 @@ struct	eth_a_csreg {
 #define ETH_AM335X_MDIO_ADDR		0x4A101000
 
 #define	ETH_AM335X_INIT_DELAY	1000000
+
+#define ETH_AM335X_RX_RING_SIZE	32
+#define ETH_AM335X_TX_RING_SIZE	16
+
+#define ETH_AM335X_RDS_SOP	0x8000	/* Start of packet	*/
+#define ETH_AM335X_RDS_EOP	0x4000
+#define ETH_AM335X_RDS_OWN	0x2000
+#define ETH_AM335X_RDS_EOQ	0x1000
+
+
+#define ETH_AM335X_TDS_SOP	0x8000 /* Start of packet	*/
+#define ETH_AM335X_TDS_EOP	0x4000
+#define ETH_AM335X_TDS_OWN	0x2000
+#define ETH_AM335X_TDS_EOQ	0x1000
+#define ETH_AM335X_TDS_DIR	0x0010
+#define ETH_AM335X_TDS_P1	0x0001
+
+#define ETH_AM335X_RXINT		41
+#define ETH_AM335X_TXINT		42

@@ -5,6 +5,8 @@
 #define	ETH_ADDR_LEN	6	/* Length of Ethernet (MAC) address	*/
 typedef	unsigned char Eaddr[ETH_ADDR_LEN];/* a physical Ethernet address*/
 
+#define	ETH_BUF_SIZE		1518	/* 1500 MTU + 14 ETH Header + 4 bytes optional VLAN Tagging (CRC not passed by default) */
+
 /* State of the Ethernet interface */
 
 #define	ETH_STATE_FREE		0	/* control block is unused 	*/
@@ -92,7 +94,7 @@ void    ethhandler(uint32);
 #define ETH_PHY_CTLREG_RESET	0x8000
 #define ETH_PHY_STATREG_LINK	0x0004
 
-#define ETH_PHY_10M		0x0000
+#define ETH_PHY_10M		    0x0000
 #define ETH_PHY_100M		0x2000
 #define ETH_PHY_1000M		0x0040
 #define ETH_PHY_CTLREG_SM	0x2040	/* Speed Mask	*/

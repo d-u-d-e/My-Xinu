@@ -65,6 +65,7 @@ void enable(void);
 void halt(void);
 intmask disable(void);
 void initevec(void);
+int32 set_evec(uint32 xnum, uint32 handler);
 void restore(intmask);
 syscall kprintf(char *fmt, ...);
 void panic(char * msg);
@@ -76,4 +77,5 @@ syscall close(did32 descrp);
 syscall control(did32 descrp, int32 func, int32 arg1, int32 arg2);
 
 
+uint32 getticks();
 void xdone(void);

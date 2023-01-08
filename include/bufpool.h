@@ -25,3 +25,6 @@ extern struct bpentry buftab[];/* Buffer pool table	*/
 extern bpid32 nbpools;	/* current number of allocated pools */
 
 status bufinit(void);
+bpid32 mkbufpool(int32 bufsiz, int32 numbufs);
+syscall freebuf(char * bufaddr);
+char * getbuf(bpid32 poolid);

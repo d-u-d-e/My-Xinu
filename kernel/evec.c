@@ -52,7 +52,7 @@ void irq_dispatch()
 		handler(xnum);
 	}
 
-	/* Acknowledge the interrupt (enable other IRQs to be received, however still disabled here)*/
+	/* Acknowledge the interrupt (enable other IRQs to be received, however still disabled here) */
 
 	csrptr->control |= (INTC_CONTROL_NEWIRQAGR);
 
@@ -130,7 +130,7 @@ int32 set_evec(uint32 xnum, uint32 handler)
 
 	/* Reset the bit to enable that interrupt number */
 
-	csrptr->banks[bank].mir &= (~mask);
+	csrptr->banks[bank].mir &= (~mask); /* default mask after reset is 0xFFFFFFFF for each bank */ 
 
 	return OK;
 }

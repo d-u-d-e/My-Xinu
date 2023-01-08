@@ -7,8 +7,6 @@ uint32  clktime;	/* Seconds since boot */
 qid16   sleepq;     /* Queue of sleeping processes */
 uint32  count1000;  /* ms since last clock tick */
 
-extern int32 set_evec(uint32 xnum, uint32 handler);
-
 /*------------------------------------------------------------------------
  * clkinit  -  Initialize the clock and sleep queue at startup
  *------------------------------------------------------------------------

@@ -1,6 +1,10 @@
 #include <ether.h>
 #include <am335x_eth.h>
 #include <delay.h>
+#include <memory.h>
+#include <lib.h>
+#include <net.h>
+#include <semaphore.h>
 
 struct ethcblk ethertab[1];
 
@@ -109,7 +113,131 @@ devcall ethinit(struct dentry * devptr)
     kprintf("%02X\n", ethptr->devAddress[5]);
 
     /* Initialize the rx ring size field */
+    ethptr->rxRingSize = ETH_AM335X_RX_RING_SIZE;
 
+    /* Allocate memory for the rx ring */
+    ethptr->rxRing = (void *)getmem(sizeof(struct eth_a_rx_desc) * ethptr->rxRingSize);
+
+    if((int32)ethptr->rxRing == SYSERR){
+        return SYSERR;
+    }
+
+    /* Zero out the rx ring */
+    memset((char *)ethptr->rxRing, NULLCH, sizeof(struct eth_a_rx_desc) * ethptr->rxRingSize);
+
+    /* Allocate memory for rx buffers */
+    ethptr->rxBufs = (void *)getmem(ETH_BUF_SIZE * ethptr->rxRingSize);
+
+    if((int32)ethptr->rxBufs == SYSERR){
+        return SYSERR;
+    }
+
+    /* Zero out the rx buffers */
+    memset((char *)ethptr->rxBufs, NULLCH, ETH_BUF_SIZE * ethptr->rxRingSize);
+
+    /* Initialize the rx ring */
+
+    struct eth_a_rx_desc * rdescptr = (struct eth_a_rx_desc *)ethptr->rxRing;
+    struct netpacket * pktptr = (struct netpacket *)ethptr->rxBufs;
+
+    for(int i = 0; i < ethptr->rxRingSize; i++){
+        rdescptr->next = rdescptr + 1;
+        rdescptr->buffer = (uint32)pktptr->net_ethdst;
+        rdescptr->buflen = ETH_BUF_SIZE;
+        rdescptr->bufoff = 0;
+        rdescptr->stat = ETH_AM335X_RDS_OWN;
+        pktptr++;
+        rdescptr++;
+    }
+    (--rdescptr)->next = NULL;
+
+    ethptr->rxHead = 0;
+    ethptr->rxTail = 0;
+    ethptr->isem = semcreate(0);
+    if((int32)ethptr->isem == SYSERR){
+        return SYSERR;
+    }
+
+    /* initialize the tx ring size */
+	ethptr->txRingSize = ETH_AM335X_TX_RING_SIZE;
+
+    /* Allocate memory for tx ring */
+	ethptr->txRing = (void*)getmem(sizeof(struct eth_a_tx_desc) * ethptr->txRingSize);
+	if((int32)ethptr->txRing == SYSERR) {
+		return SYSERR;
+	}
+    
+    /* Zero out the tx ring */
+	memset((char *)ethptr->txRing, NULLCH, sizeof(struct eth_a_tx_desc) * ethptr->txRingSize);
+
+	/* Allocate memory for tx buffers */
+	ethptr->txBufs = (void*)getmem(ETH_BUF_SIZE * ethptr->txRingSize);
+	if((int32)ethptr->txBufs == SYSERR) {
+		return SYSERR;
+	}
+
+    /* Zero out the tx buffers */
+	memset((char *)ethptr->txBufs, NULLCH, ETH_BUF_SIZE * ethptr->txRingSize);
+
+    /* Initialize the tx ring */
+
+    struct eth_a_tx_desc * tdescptr = (struct eth_a_tx_desc *)ethptr->txRing;
+    pktptr = (struct netpacket *)ethptr->txBufs;
+    
+    for(int i = 0; i < ethptr->txRingSize; i++){
+        tdescptr->next = NULL;
+        tdescptr->buffer = (uint32)pktptr->net_ethdst;
+        tdescptr->buflen = ETH_BUF_SIZE;
+        tdescptr->bufoff = 0;
+        tdescptr->stat = (ETH_AM335X_TDS_SOP | ETH_AM335X_TDS_EOP | 
+                            ETH_AM335X_TDS_DIR | ETH_AM335X_TDS_P1);
+        tdescptr++;
+        pktptr++;
+    }
+
+    ethptr->txHead = 0;
+    ethptr->txTail = 0;
+    ethptr->osem = semcreate(ethptr->txRingSize);
+    if((int32)ethptr->osem == SYSERR){
+        return SYSERR;
+    }
+
+    /* Enable the ALE and put it into bypass mode */
+    /* this means that packets received from port 1 (2) are not forwarded to port 2 (1) but sent to the host port 0 only */
+    csrptr->ale->ctrl = (ETH_AM335X_ALECTL_EN | ETH_AM335X_ALECTL_BY);
+
+    /* Put the ports 0, 1 in forwarding state */
+
+    csrptr->ale->portctl[0] = ETH_AM335X_ALEPCTL_FWD;
+	csrptr->ale->portctl[1] = ETH_AM335X_ALEPCTL_FWD;
+
+    /* Start the rx and tx processes in DMA */
+	csrptr->cpdma->tx_ctrl = 1;
+	csrptr->cpdma->rx_ctrl = 1;
+
+    /* Initialize the head desc pointers for tx and rx */
+
+    csrptr->stateram->tx_hdp[0] = 0;
+    csrptr->stateram->rx_hdp[0] = (uint32)ethptr->rxRing;
+
+    /* Enable Rx and Tx in MAC */
+    csrptr->sl->macctrl |= ETH_AM335X_SLCTL_EN;
+
+    /* Set interrupt vectors */
+    set_evec(ETH_AM335X_TXINT, (uint32)devptr->dvintr);
+    set_evec(ETH_AM335X_RXINT, (uint32)devptr->dvintr);
+
+    /* Enable the channel 0 CPDMA interrupts */
+    csrptr->cpdma->tx_intmask_set = 0x1;
+    csrptr->cpdma->rx_intmask_set = 0x1;
+
+    /* Route the interrupts to core 0 (the only one enabled in this board) */
+    /* This is useful however if interrupts should be processed by different cores */
+
+    csrptr->wr->c0_tx_en = 0x1; /* channel 0 tx interrupts go to core 0 */
+    csrptr->wr->c0_rx_en = 0x1; /* channel 0 rx interrupts go to core 0 */
+
+    return OK;
 }
 
 /*-----------------------------------------------------------------------
