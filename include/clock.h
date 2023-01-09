@@ -53,3 +53,4 @@ extern uint32 clktime;
 extern qid16  sleepq;
 
 status unsleep(pid32 pid);
+status insertd(pid32 pid, qid16 q, int32 key);

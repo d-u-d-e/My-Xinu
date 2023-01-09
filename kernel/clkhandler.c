@@ -44,6 +44,9 @@ void clkhandler(void)
 		if ((--queuetab[firstid(sleepq)].qkey) == 0){
 			wakeup(); /* wake up all processes with key == 0 */
 		}
+		/* if a process is awoken, then resched() is called and might switch context */
+		/* resched() will reinitialize preempt to QUANTUM for the running process */
+		/* the process executing this handler will return here once the context switch happens */
 	}
 
     /* Decrement the preemption counter */

@@ -3,8 +3,13 @@
 #include <ether.h>
 
 #define	ARP_HALEN	6		/* Size of Ethernet MAC address	*/
+#define	ARP_PALEN	4		/* Size of IP address		*/
 
 #define	ARP_SIZ		16		/* Number of entries in a cache	*/
+
+#define	ARP_RETRY	3		/* Num. retries for ARP request	*/
+
+#define	ARP_TIMEOUT	300		/* Retry timer in milliseconds	(MAX 1 sec)*/
 
 /* State of an ARP cache entry */
 
@@ -12,6 +17,12 @@
 #define	AR_PENDING	1		/* Resolution in progress	*/
 #define	AR_RESOLVED	2		/* Entry is valid		*/
 
+
+#define	ARP_HTYPE	1		/* Ethernet hardware type	*/
+#define ARP_PTYPE	0x0800		/* IP protocol type		*/
+
+#define ARP_OP_REQ	1		/* Request op code		*/
+#define ARP_OP_RPLY	2		/* Reply op code		*/
 
 #pragma pack(2)
 struct	arppacket {			/* ARP packet for IP & Ethernet	*/
@@ -40,3 +51,6 @@ struct arpentry {			/* Entry in the ARP cache	*/
 
 void arp_init(void);
 void arp_in(struct arppacket * pktptr);
+void arp_hton(struct arppacket * pktptr);
+void arp_ntoh(struct arppacket * pktptr);
+status arp_resolve(uint32 nxthop, byte mac[ETH_ADDR_LEN]);

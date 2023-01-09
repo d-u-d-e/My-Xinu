@@ -66,6 +66,7 @@ pid32 create(
     );
 
 umsg32 receive(void);
+umsg32 recvtime(int32 maxwait);
 syscall send(pid32 pid, umsg32 msg);
 syscall kill(pid32 pid);
 pid32 getpid(void);
