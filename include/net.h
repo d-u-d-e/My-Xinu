@@ -34,8 +34,8 @@ struct netpacket{
 	uint16	net_ipid;		/* IP datagram ID		*/
 	uint16	net_ipfrag;		/* IP flags & fragment offset	*/
 	byte	net_ipttl;		/* IP time-to-live		*/
-	byte	net_ipproto;		/* IP protocol (actually type)	*/
-	uint16	net_ipcksum;		/* IP checksum			*/
+	byte	net_ipproto;	/* IP protocol (actually type)	*/
+	uint16	net_ipcksum;	/* IP checksum			*/
 	uint32	net_ipsrc;		/* IP source address		*/
 	uint32	net_ipdst;		/* IP destination address	*/
 	union {
@@ -77,3 +77,5 @@ extern struct network NetData;
 
 void eth_ntoh(struct netpacket * pktptr);
 void eth_hton(struct netpacket * pktptr);
+
+extern ibid32 netbufpool;

@@ -10,6 +10,10 @@ struct netpacket;
 
 #define	IP_OQSIZ	8		/* Size of IP output queue	*/
 
+#define	IP_UDP		17		/* UDP protocol type for IP 	*/
+#define	IP_ICMP		1		/* ICMP protocol type for IP 	*/
+
+#define	IP_HDR_LEN	20		/* Bytes in an IP header without options */
 
 /* Queue of outgoing IP packets waiting for ipout process */
 
@@ -20,6 +24,8 @@ struct iqentry{
 	struct	netpacket * iqbuf[IP_OQSIZ];/* Circular packet queue */
 };
 
-void ip_in(struct netpacket *);
-
 extern struct iqentry ipoqueue;	/* Network output queue	*/
+
+void ip_in(struct netpacket *);
+status ip_enqueue(struct netpacket * pktptr);
+status ip_send(struct netpacket * pktptr);

@@ -210,7 +210,7 @@ void nulluser()
 		"Startup process", 0, NULL));
 
 	/* Become the Null process (i.e., guarantee that the CPU has	*/
-	/*  something to run when no other process is ready to execute)	*/
+	/* something to run when no other process is ready to execute)	*/
 
 	while (TRUE) {
 		/* Loop until there is an external interrupt */

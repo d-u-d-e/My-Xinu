@@ -6,6 +6,7 @@
 #include <arp.h>
 #include <process.h>
 #include <ip.h>
+#include <semaphore.h>
 
 /*------------------------------------------------------------------------
  * net_init  -  Initialize network data structures and processes
@@ -22,6 +23,7 @@ uint32 netportseed;
  */
 
 static process netin(void);
+process ipout(void);
 
 void net_init(void)
 {
@@ -40,7 +42,7 @@ void net_init(void)
 
     /* Create the network buffer pool */
 
-    nbufs = UDP_SLOTS * UDP_QSIZ + ICMP_SLOTS * ICMP_QSIZ + 1;
+    nbufs = UDP_SLOTS * UDP_QSIZ + ICMP_SLOTS * ICMP_QSIZ + 1; // +1 slot for ARP resolve
 
     netbufpool = mkbufpool(PACKLEN, nbufs);
 
@@ -52,16 +54,26 @@ void net_init(void)
 
     /* Initialize ICMP */
 
+    icmp_init();
+
     /* Initialize the IP output queue */
 
+    ipoqueue.iqhead = 0;
+    ipoqueue.iqtail = 0;
+    ipoqueue.iqsem = semcreate(0);
+    if ((int32)ipoqueue.iqsem == SYSERR){
+        panic("Cannot create ip output queue semaphore");
+		return;
+    }
+
     /* Create the IP output process */
+
+    resume(create(ipout, NETSTK, NETPRIO, "ipout", 0, NULL));
 
     /* Create a network input process */
 
     resume(create(netin, NETSTK, NETPRIO, "netin", 0, NULL));
 }
-
-static void eth_ntoh(struct netpacket * pktptr);
 
 process netin(void)
 {

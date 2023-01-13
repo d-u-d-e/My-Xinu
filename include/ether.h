@@ -13,6 +13,7 @@ typedef	unsigned char Eaddr[ETH_ADDR_LEN];/* a physical Ethernet address*/
 #define	ETH_STATE_DOWN		1	/* interface is currently inactive 		*/
 #define	ETH_STATE_UP		2	/* interface is currently active */
 
+#define	ETH_HDR_LEN		14
 
 /* Ethernet multicast */
 
