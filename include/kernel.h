@@ -34,7 +34,7 @@ typedef	int32	bpid32;		/* buffer pool ID */
 typedef	int32	did32;		/* device ID */
 typedef	int32	ibid32;		/* index block ID (used in file system)	*/
 typedef	int32	dbid32;		/* data block ID (used in file system)	*/
-typedef int32	shellcmd;	/* shell command declaration		*/
+typedef	int32	uid32;		/* ID for UDP table descriptor		*/
 
 /* Function declaration return types */
 
@@ -43,6 +43,7 @@ typedef int32	devcall;	/* device call declaration */
 typedef	void    interrupt;	/* interrupt procedure			*/
 typedef	int32	status;		/* returned status value (OK/SYSERR)	*/
 typedef int32	process;	/* top-level function of a process	*/
+typedef int32	shellcmd;	/* shell command declaration		*/
 
 /* Universal return constants */
 

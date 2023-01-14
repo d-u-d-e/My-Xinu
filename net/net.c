@@ -50,7 +50,9 @@ void net_init(void)
 
     arp_init();
 
-    /* Initialize UDP TODO */
+    /* Initialize UDP */
+
+    udp_init();
 
     /* Initialize ICMP */
 

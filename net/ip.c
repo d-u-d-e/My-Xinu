@@ -233,7 +233,6 @@ status ip_send(struct netpacket * pktptr)
     if ((dest == IP_BCAST) || 
         (dest == NetData.ipbcast)){
         memcpy(pktptr->net_ethdst, NetData.ethbcast, ETH_ADDR_LEN);
-        /* TODO should set eth source add? */
         retval = ip_out(pktptr);
         restore(mask);
         return retval;
