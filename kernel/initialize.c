@@ -8,6 +8,8 @@
 #include <bufpool.h>
 #include <clock.h>
 #include <lib.h>
+#include <net.h>
+#include <stdio.h>
 
 struct memblk memlist;	/* List of free memory blocks */
 
@@ -149,12 +151,31 @@ static void sysinit()
  */
 
 extern process main(void);
+extern uint32 getlocalip(void);
 
 static process startup(void)
 {
 	/* DO STUFF THAT CAN'T BE DONE FROM NULL PROCESS */
 	/* remember that the null process cannot cause itself to be */
 	/* dequed from the ready queue */
+
+	/* Use DHCP to obtain an IP address and format it */
+
+	uint32 ipaddr;
+	char str[128];
+
+	ipaddr = getlocalip();
+	if ((int32)ipaddr == SYSERR){
+		kprintf("Cannot obtain an IP address\n");
+	}
+	else{
+		/* Print the IP in dotted decimal and hex */
+		ipaddr = NetData.ipucast;
+		sprintf(str, "%d.%d.%d.%d", (ipaddr >> 24) & 0xFF, (ipaddr >> 16) & 0xFF, 
+			(ipaddr >> 8) & 0xFF, ipaddr & 0xFF);
+		kprintf("Obtained IP address %s  (0x%08x)\n", str, ipaddr);
+	}
+
 
 	/* Create a process to execute function main() */
 

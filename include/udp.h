@@ -12,6 +12,9 @@
 #define	UDP_USED	1		/* Entry is being used		*/
 #define	UDP_RECV	2		/* Entry has a process waiting	*/
 
+#define	UDP_DHCP_CPORT	68		/* Port number for DHCP client	*/
+#define	UDP_DHCP_SPORT	67		/* Port number for DHCP server	*/
+
 #define UDP_HDR_LEN	8		/* Bytes in a UDP header	*/
 
 struct	udpentry {			/* Entry in the UDP endpoint tbl*/
@@ -30,3 +33,9 @@ void udp_in(struct netpacket * pkptr);
 void udp_hton(struct netpacket * pktptr);
 void udp_ntoh(struct netpacket * pktptr);
 void udp_init(void);
+status udp_sendto(uid32 slot, uint32 remip, uint16 remport, char * buf, int32 len);
+status udp_send(uid32 slot, char * buf, int32 len);
+int32 udp_recvaddr(uid32 slot, uint32 * remip, uint16 * remport, char * buf, int32 len, uint32 timeout);
+int32 udp_recv(uid32 slot, char * buf, int32 len, uint32 timeout);
+uid32 udp_register(uint32 remip, uint16 remport, uint16 locport);
+status udp_release(uid32 slot);

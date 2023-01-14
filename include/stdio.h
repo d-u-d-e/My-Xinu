@@ -8,6 +8,7 @@
 
 int fprintf(int dev, const char * fmt, ...);
 int printf(const char * fmt, ...);
+int sprintf(char * str, char * fmt, ...);
 
 syscall getc(did32 descrp);
 syscall putc(did32 descrp, char ch);

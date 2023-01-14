@@ -29,3 +29,4 @@ extern struct iqentry ipoqueue;	/* Network output queue	*/
 void ip_in(struct netpacket *);
 status ip_enqueue(struct netpacket * pktptr);
 status ip_send(struct netpacket * pktptr);
+status dot2ip(char * dotted, uint32 * result);

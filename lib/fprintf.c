@@ -9,7 +9,7 @@
  *------------------------------------------------------------------------
  */
 
-void _fdoprnt(char * fmt, va_list ap, int (*func)(int, char), int farg);
+extern void _fdoprnt(char * fmt, va_list ap, int (*func)(int, char), int farg);
 
 int fprintf(int dev, const char * fmt, ...)
 {

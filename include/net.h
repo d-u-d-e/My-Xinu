@@ -23,6 +23,8 @@
 #define	ETH_IP      0x0800		/* Ethernet type for IP		*/
 #define	ETH_IPv6    0x86DD		/* Ethernet type for IPv6	*/
 
+#define NETBOOTFILE	128		/* Size of the netboot filename	*/
+
 #pragma pack(2)
 struct netpacket{
 	byte	net_ethdst[ETH_ADDR_LEN];/* Ethernet dest. MAC address	*/
@@ -65,12 +67,14 @@ struct network { /* Network information	*/
     uint32  ipbcast; /* IP broadcast address	*/
     uint32  ipmask;  /* IP address mask */
     uint32  ipprefix; /* IP (network) prefix */
+	uint32	bootserver;	/* Boot server address		*/
     uint32  iprouter; /* Default router address */
     uint32  dnsserver;	/* DNS server address */
     uint32  ntpserver; /* NTP (time) server address */
     bool8   ipvalid; /* nonzero => above are valid	*/
     byte    ethucast[ETH_ADDR_LEN]; /* Ethernet unicast address */
     byte    ethbcast[ETH_ADDR_LEN]; /* Ethernet broadcast address */
+	char 	bootfile[NETBOOTFILE]; /* Name of boot file	*/
 };
 
 extern struct network NetData;
