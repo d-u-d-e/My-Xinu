@@ -10,6 +10,7 @@ shellcmd xsh_ps(int nargs, char * args[]);
 shellcmd xsh_cat(int nargs, char * args[]);
 shellcmd xsh_echo(int nargs, char *args[]);
 shellcmd xsh_ping(int nargs, char *args[]);
+shellcmd xsh_clear(int nargs, char * args[]);
 
 status addargs(pid32 pid, int32 ntok, int32 tok[], 
         int32 tlen, char * tokbuf, void * dummy);

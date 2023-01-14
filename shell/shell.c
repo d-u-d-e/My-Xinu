@@ -15,7 +15,8 @@ const struct cmdent	cmdtab[] = {
     {"ps", FALSE, xsh_ps},
     {"cat", FALSE, xsh_cat},
     {"echo", FALSE, xsh_echo},
-    {"ping", FALSE, xsh_ping}
+    {"ping", FALSE, xsh_ping},
+    {"clear", TRUE, xsh_clear}
 };
 
 /************************************************************************/

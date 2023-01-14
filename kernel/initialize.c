@@ -44,8 +44,6 @@ struct sentry semtab[NSEM];	/* Semaphore table			*/
  * see https://en.wikipedia.org/wiki/ANSI_escape_code for details
  */
 
-#define	CONSOLE_RESET	" \033[0m\033[2J\033[;H"
-
 extern syscall kprintf(char *fmt, ...);
 extern syscall init(did32 descrp);
 extern pri16 resume(pid32 pid);
